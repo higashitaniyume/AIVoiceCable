@@ -1,0 +1,38 @@
+<Window x:Class="AIVoiceCable.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:AIVoiceCable.Views"
+        mc:Ignorable="d"
+        Title="AIVoiceCable" Height="820" MinHeight="680" Width="1180" MinWidth="1040">
+    <DockPanel Background="#F5F7FA">
+        <Border DockPanel.Dock="Top" Background="#172033" Padding="18,12">
+            <StackPanel>
+                <TextBlock Text="AIVoiceCable" Foreground="White" FontSize="22" FontWeight="SemiBold" />
+                <TextBlock Text="AI 回复转语音并播放到 VB-CABLE Input" Foreground="#B8C4D9" Margin="0,3,0,0" />
+            </StackPanel>
+        </Border>
+
+        <TabControl Margin="16" SelectedIndex="{Binding SelectedTabIndex}">
+            <TabItem Header="自定义回复">
+                <views:CustomReplyView DataContext="{Binding CustomReply}" />
+            </TabItem>
+            <TabItem Header="完全 AI 回复">
+                <views:FullAiReplyView DataContext="{Binding FullAiReply}" />
+            </TabItem>
+            <TabItem Header="声色管理">
+                <views:VoiceProfilesView DataContext="{Binding VoiceProfiles}" />
+            </TabItem>
+            <TabItem Header="API 设置">
+                <views:ApiSettingsView DataContext="{Binding ApiSettings}" />
+            </TabItem>
+            <TabItem Header="音频设备设置">
+                <views:AudioSettingsView DataContext="{Binding AudioSettings}" />
+            </TabItem>
+            <TabItem Header="日志 / 调试">
+                <views:LogsView DataContext="{Binding Logs}" />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>

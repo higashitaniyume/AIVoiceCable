@@ -1,0 +1,64 @@
+<UserControl x:Class="AIVoiceCable.Views.AudioSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Margin="0,0,12,0">
+            <GroupBox Header="设备选择">
+                <StackPanel>
+                    <TextBlock Text="TTS 输出设备（通常选择 CABLE Input）" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding RenderDevices}" SelectedItem="{Binding SelectedTtsOutputDevice}" DisplayMemberPath="DisplayName" />
+                    <TextBlock Text="本机监听设备（真实耳机或音响）" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding RenderDevices}" SelectedItem="{Binding SelectedMonitorDevice}" DisplayMemberPath="DisplayName" />
+                    <CheckBox Content="同时在本机监听 AI 语音" IsChecked="{Binding MonitorLocally}" Margin="0,4,0,12" />
+                    <TextBlock Text="系统音频监听来源（完全 AI 回复使用）" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding RenderDevices}" SelectedItem="{Binding SelectedCaptureRenderDevice}" DisplayMemberPath="DisplayName" />
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="刷新设备列表" Command="{Binding RefreshCommand}" />
+                        <Button Content="保存设备配置" Command="{Binding SaveCommand}" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Foreground="#31405A" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header="VB-CABLE 检测">
+                <StackPanel>
+                    <TextBlock Text="已检测到 VB-CABLE" Visibility="{Binding IsVbCableInstalled, Converter={StaticResource BooleanToVisibilityConverter}}" FontWeight="SemiBold" Foreground="#176B3A" />
+                    <TextBlock Text="未检测到 VB-CABLE。请安装 VB-Audio Virtual Cable，安装后重启应用或刷新设备列表。"
+                               Visibility="{Binding IsVbCableInstalled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}"
+                               TextWrapping="Wrap"
+                               FontWeight="SemiBold"
+                               Foreground="#9B2C2C" />
+                    <TextBlock Text="应用内监听会在播放到 CABLE Input 的同时复制一份到真实监听设备，比修改 Windows 控制面板的“侦听此设备”更稳定。" TextWrapping="Wrap" Margin="0,10,0,0" />
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <GroupBox Header="播放设备">
+                <DataGrid ItemsSource="{Binding RenderDevices}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="名称" Binding="{Binding DisplayName}" Width="*" />
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="220" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="录音设备">
+                <DataGrid ItemsSource="{Binding CaptureDevices}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="名称" Binding="{Binding DisplayName}" Width="*" />
+                        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="220" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </GroupBox>
+        </Grid>
+    </Grid>
+</UserControl>

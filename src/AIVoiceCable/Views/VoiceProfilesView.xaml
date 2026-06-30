@@ -1,0 +1,39 @@
+<UserControl x:Class="AIVoiceCable.Views.VoiceProfilesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="380" />
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Header="声色列表" Margin="0,0,12,0">
+            <DataGrid ItemsSource="{Binding VoiceProfiles}" SelectedItem="{Binding SelectedProfile}" AutoGenerateColumns="False" CanUserAddRows="False">
+                <DataGrid.Columns>
+                    <DataGridCheckBoxColumn Header="默认" Binding="{Binding IsDefault}" Width="70" />
+                    <DataGridTextColumn Header="名称" Binding="{Binding Name}" Width="160" />
+                    <DataGridTextColumn Header="Reference ID / Voice ID" Binding="{Binding ReferenceId}" Width="260" />
+                    <DataGridTextColumn Header="备注" Binding="{Binding Note}" Width="*" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
+
+        <GroupBox Grid.Column="1" Header="编辑声色">
+            <StackPanel>
+                <TextBlock Text="声色名称" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="Fish Audio reference_id / voice id" FontWeight="SemiBold" />
+                <TextBox Text="{Binding ReferenceId, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="备注" FontWeight="SemiBold" />
+                <TextBox Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="96" TextWrapping="Wrap" />
+                <WrapPanel>
+                    <Button Content="新建" Command="{Binding NewCommand}" />
+                    <Button Content="保存" Command="{Binding SaveCommand}" />
+                    <Button Content="删除" Command="{Binding DeleteCommand}" />
+                    <Button Content="设为默认" Command="{Binding SetDefaultCommand}" />
+                </WrapPanel>
+                <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Foreground="#31405A" />
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

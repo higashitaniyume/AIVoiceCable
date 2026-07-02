@@ -20,7 +20,6 @@ public sealed class AudioPlaybackService(AudioDeviceService audioDeviceService, 
             throw new FileNotFoundException("音频文件不存在", audioPath);
         }
 
-        await StopAsync();
         logger.Info($"播放开始：{audioPath}");
         PlaybackStarted?.Invoke(this, EventArgs.Empty);
 
@@ -51,7 +50,6 @@ public sealed class AudioPlaybackService(AudioDeviceService audioDeviceService, 
         }
         finally
         {
-            await StopAsync();
             PlaybackCompleted?.Invoke(this, EventArgs.Empty);
         }
     }

@@ -18,9 +18,11 @@ public sealed partial class FullAiReplyViewModel : ObservableObject
     private readonly IAudioPlaybackService _playbackService;
     private readonly AudioDeviceService _audioDeviceService;
     private readonly ILoggingService _logger;
+    private readonly object _playbackSuppressionGate = new();
     private CancellationTokenSource? _runCts;
     private bool _suppressFinalTranscript;
     private bool _isProcessingFinal;
+    private int _activePlaybackSuppressions;
 
     [ObservableProperty]
     private string state = "未启动";
@@ -261,7 +263,12 @@ public sealed partial class FullAiReplyViewModel : ObservableObject
             return;
         }
 
-        _suppressFinalTranscript = true;
+        lock (_playbackSuppressionGate)
+        {
+            _activePlaybackSuppressions++;
+            _suppressFinalTranscript = true;
+        }
+
         Application.Current.Dispatcher.Invoke(() =>
         {
             StatusMessage = "应用正在播放语音，ASR 已临时忽略，避免识别到自己的声音。";
@@ -275,7 +282,19 @@ public sealed partial class FullAiReplyViewModel : ObservableObject
             return;
         }
 
-        _suppressFinalTranscript = false;
+        var stillSuppressing = false;
+        lock (_playbackSuppressionGate)
+        {
+            _activePlaybackSuppressions = Math.Max(0, _activePlaybackSuppressions - 1);
+            _suppressFinalTranscript = _activePlaybackSuppressions > 0;
+            stillSuppressing = _suppressFinalTranscript;
+        }
+
+        if (stillSuppressing)
+        {
+            return;
+        }
+
         Application.Current.Dispatcher.Invoke(() =>
         {
             State = "正在监听";
@@ -304,16 +323,8 @@ public sealed partial class FullAiReplyViewModel : ObservableObject
             ?? _configService.VoiceProfiles.First();
         var audio = await _ttsService.GenerateSpeechAsync(reply, voice, _configService.Config.FishAudio.DefaultModel, token);
 
-        _suppressFinalTranscript = _configService.Config.FullAiReply.PauseAsrWhilePlaying;
         await Application.Current.Dispatcher.InvokeAsync(() => State = "正在播放到 VB-CABLE");
-        try
-        {
-            await _playbackService.PlayAsync(audio, _configService.Config.Audio.TtsOutputDeviceId, _configService.Config.Audio.MonitorDeviceId, _configService.Config.Audio.MonitorLocally, token);
-        }
-        finally
-        {
-            _suppressFinalTranscript = false;
-        }
+        await _playbackService.PlayAsync(audio, _configService.Config.Audio.TtsOutputDeviceId, _configService.Config.Audio.MonitorDeviceId, _configService.Config.Audio.MonitorLocally, token);
 
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {

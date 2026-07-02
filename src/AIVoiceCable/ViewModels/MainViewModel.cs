@@ -4,6 +4,7 @@ namespace AIVoiceCable.ViewModels;
 
 public sealed partial class MainViewModel(
     CustomReplyViewModel customReply,
+    CustomAudioReplyViewModel customAudioReply,
     FullAiReplyViewModel fullAiReply,
     VoiceProfilesViewModel voiceProfiles,
     ApiSettingsViewModel apiSettings,
@@ -14,6 +15,7 @@ public sealed partial class MainViewModel(
     private int selectedTabIndex;
 
     public CustomReplyViewModel CustomReply { get; } = customReply;
+    public CustomAudioReplyViewModel CustomAudioReply { get; } = customAudioReply;
     public FullAiReplyViewModel FullAiReply { get; } = fullAiReply;
     public VoiceProfilesViewModel VoiceProfiles { get; } = voiceProfiles;
     public ApiSettingsViewModel ApiSettings { get; } = apiSettings;

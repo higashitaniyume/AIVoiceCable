@@ -48,9 +48,11 @@ public partial class App : Application
         services.AddSingleton<ILlmService, LlmService>();
         services.AddSingleton<IRealtimeTranscriptionService, AssemblyAiRealtimeTranscriptionService>();
         services.AddSingleton<ReplyHistoryService>();
+        services.AddSingleton<CustomAudioLibraryService>();
 
         services.AddSingleton<MainViewModel>();
         services.AddSingleton<CustomReplyViewModel>();
+        services.AddSingleton<CustomAudioReplyViewModel>();
         services.AddSingleton<FullAiReplyViewModel>();
         services.AddSingleton<VoiceProfilesViewModel>();
         services.AddSingleton<ApiSettingsViewModel>();

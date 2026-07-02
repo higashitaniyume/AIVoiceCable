@@ -4,6 +4,8 @@ namespace AIVoiceCable.Interfaces;
 
 public interface IConfigService
 {
+    event EventHandler? VoiceProfilesChanged;
+
     AppConfig Config { get; }
     IList<VoiceProfile> VoiceProfiles { get; }
     string AppDataDirectory { get; }

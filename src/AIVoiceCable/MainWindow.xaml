@@ -18,6 +18,9 @@
             <TabItem Header="自定义回复">
                 <views:CustomReplyView DataContext="{Binding CustomReply}" />
             </TabItem>
+            <TabItem Header="自定义音频回复">
+                <views:CustomAudioReplyView DataContext="{Binding CustomAudioReply}" />
+            </TabItem>
             <TabItem Header="完全 AI 回复">
                 <views:FullAiReplyView DataContext="{Binding FullAiReply}" />
             </TabItem>

@@ -44,13 +44,18 @@
 
         <GroupBox Grid.Column="1" Header="历史记录">
             <DockPanel>
-                <Button DockPanel.Dock="Bottom" Content="从历史记录复用" Command="{Binding ReuseHistoryCommand}" />
+                <StackPanel DockPanel.Dock="Bottom">
+                    <TextBlock Text="历史音频文件" FontWeight="SemiBold" />
+                    <ComboBox ItemsSource="{Binding ActiveHistoryAudioPaths}" SelectedItem="{Binding SelectedHistoryAudioPath}" />
+                    <Button Content="从历史记录复用" Command="{Binding ReuseHistoryCommand}" />
+                </StackPanel>
                 <ListBox ItemsSource="{Binding History}" SelectedItem="{Binding SelectedHistoryItem}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Margin="0,4">
                                 <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" FontWeight="SemiBold" />
-                                <TextBlock Text="{Binding VoiceProfileName}" Foreground="#5E6A7D" />
+                                <TextBlock Text="{Binding VoiceProfileName, StringFormat=声色：{0}}" Foreground="#5E6A7D" />
+                                <TextBlock Text="{Binding AudioCount, StringFormat=音频文件：{0} 个}" Foreground="#5E6A7D" />
                                 <TextBlock Text="{Binding Summary}" TextWrapping="Wrap" />
                             </StackPanel>
                         </DataTemplate>

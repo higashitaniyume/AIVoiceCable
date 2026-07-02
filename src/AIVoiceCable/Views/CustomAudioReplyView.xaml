@@ -1,0 +1,53 @@
+<UserControl x:Class="AIVoiceCable.Views.CustomAudioReplyView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="420" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <GroupBox Header="添加自定义音频" Margin="0,0,12,0">
+            <StackPanel>
+                <TextBlock Text="音频文件" FontWeight="SemiBold" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Text="{Binding SelectedSourceFilePath}" IsReadOnly="True" />
+                    <Button Grid.Column="1" Content="选择文件" Command="{Binding SelectSourceFileCommand}" Margin="8,0,0,8" />
+                </Grid>
+                <TextBlock Text="名称" FontWeight="SemiBold" />
+                <TextBox Text="{Binding NewAudioName, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Text="备注" FontWeight="SemiBold" />
+                <TextBox Text="{Binding NewAudioNote, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Height="96" TextWrapping="Wrap" />
+                <WrapPanel>
+                    <Button Content="添加到音频列表" Command="{Binding AddAudioCommand}" />
+                    <Button Content="停止播放" Command="{Binding StopPlaybackCommand}" />
+                </WrapPanel>
+                <TextBlock Text="{Binding StatusMessage}" TextWrapping="Wrap" Foreground="#31405A" />
+                <ProgressBar Height="4" IsIndeterminate="True" Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </StackPanel>
+        </GroupBox>
+
+        <GroupBox Grid.Column="1" Header="自定义音频列表">
+            <DockPanel>
+                <WrapPanel DockPanel.Dock="Bottom" Margin="0,12,0,0">
+                    <Button Content="试听" Command="{Binding PreviewCommand}" />
+                    <Button Content="发送到 VB-CABLE" Command="{Binding SendToCableCommand}" />
+                    <Button Content="删除" Command="{Binding DeleteAudioCommand}" />
+                    <Button Content="刷新" Command="{Binding LoadCommand}" />
+                </WrapPanel>
+                <DataGrid ItemsSource="{Binding AudioItems}" SelectedItem="{Binding SelectedAudioItem}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="名称" Binding="{Binding DisplayName}" Width="180" />
+                        <DataGridTextColumn Header="文件名" Binding="{Binding FileName}" Width="220" />
+                        <DataGridTextColumn Header="备注" Binding="{Binding Note}" Width="*" />
+                        <DataGridTextColumn Header="添加时间" Binding="{Binding CreatedAt, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Width="170" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </GroupBox>
+    </Grid>
+</UserControl>

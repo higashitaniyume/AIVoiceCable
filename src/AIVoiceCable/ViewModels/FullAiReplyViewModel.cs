@@ -70,6 +70,8 @@ public sealed partial class FullAiReplyViewModel : ObservableObject
         _transcriptionService.PartialTranscriptReceived += OnPartialTranscriptReceived;
         _transcriptionService.FinalTranscriptReceived += OnFinalTranscriptReceived;
         _transcriptionService.ErrorOccurred += OnTranscriptionError;
+        _playbackService.PlaybackStarted += OnPlaybackStarted;
+        _playbackService.PlaybackCompleted += OnPlaybackCompleted;
         RefreshDevices();
     }
 
@@ -249,6 +251,35 @@ public sealed partial class FullAiReplyViewModel : ObservableObject
         {
             State = "出错";
             StatusMessage = e.Message;
+        });
+    }
+
+    private void OnPlaybackStarted(object? sender, EventArgs e)
+    {
+        if (!IsRunning || !_configService.Config.FullAiReply.PauseAsrWhilePlaying)
+        {
+            return;
+        }
+
+        _suppressFinalTranscript = true;
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            StatusMessage = "应用正在播放语音，ASR 已临时忽略，避免识别到自己的声音。";
+        });
+    }
+
+    private void OnPlaybackCompleted(object? sender, EventArgs e)
+    {
+        if (!IsRunning || !_configService.Config.FullAiReply.PauseAsrWhilePlaying)
+        {
+            return;
+        }
+
+        _suppressFinalTranscript = false;
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            State = "正在监听";
+            StatusMessage = "播放结束，ASR 已恢复处理。";
         });
     }
 

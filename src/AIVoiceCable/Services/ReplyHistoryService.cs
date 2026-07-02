@@ -26,6 +26,7 @@ public sealed class ReplyHistoryService(IConfigService configService, ILoggingSe
             Items.Clear();
             foreach (var item in items.OrderByDescending(i => i.CreatedAt).Take(200))
             {
+                item.NormalizeAudioPaths();
                 Items.Add(item);
             }
         }
@@ -37,10 +38,24 @@ public sealed class ReplyHistoryService(IConfigService configService, ILoggingSe
 
     public async Task AddAsync(ReplyHistoryItem item, CancellationToken cancellationToken = default)
     {
+        item.NormalizeAudioPaths();
         Items.Insert(0, item);
         while (Items.Count > 200)
         {
             Items.RemoveAt(Items.Count - 1);
+        }
+
+        await SaveAsync(cancellationToken);
+    }
+
+    public async Task SaveItemAsync(ReplyHistoryItem item, CancellationToken cancellationToken = default)
+    {
+        item.NormalizeAudioPaths();
+        var index = Items.IndexOf(item);
+        if (index >= 0)
+        {
+            Items.RemoveAt(index);
+            Items.Insert(index, item);
         }
 
         await SaveAsync(cancellationToken);

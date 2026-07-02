@@ -15,6 +15,7 @@ public sealed class ConfigService(ISecretService secretService, ILoggingService 
     public string AppDataDirectory { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AIVoiceCable");
     public string CacheDirectory => Path.Combine(AppDataDirectory, "cache");
     public string LogsDirectory => Path.Combine(AppDataDirectory, "logs");
+    public event EventHandler? VoiceProfilesChanged;
 
     private string ConfigPath => Path.Combine(AppDataDirectory, "config.json");
     private string VoicesPath => Path.Combine(AppDataDirectory, "voices.json");
@@ -55,9 +56,10 @@ public sealed class ConfigService(ISecretService secretService, ILoggingService 
         return SaveJsonAsync(ConfigPath, Config, cancellationToken);
     }
 
-    public Task SaveVoiceProfilesAsync(CancellationToken cancellationToken = default)
+    public async Task SaveVoiceProfilesAsync(CancellationToken cancellationToken = default)
     {
-        return SaveJsonAsync(VoicesPath, VoiceProfiles, cancellationToken);
+        await SaveJsonAsync(VoicesPath, VoiceProfiles, cancellationToken);
+        VoiceProfilesChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private async Task<T> LoadJsonAsync<T>(string path, T fallback, CancellationToken cancellationToken)
